@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Netflix Login</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js" integrity="sha384-eMNCOe7tC1doHpGoWe/6oMVemdAVTMs2xqW4mwXrXsW0L84Iytr2wi5v2QjrP/xp" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.min.js" integrity="sha384-cn7l7gDp0eyniUwwAZgrzD06kc/tftFf19TOAs2zVinnD/C7E91j9yyk5//jjpt/" crossorigin="anonymous"></script>
+</head>
+<style>
+    * {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+    }
+    body {
+	font-family: 'Arial', sans-serif;
+	-webkit-font-smoothing: antialiased;
+    width: 100%;
+    height: 100%;
+    background: whitesmoke no-repeat center center/cover; 
+    }
+
+    ul {
+	list-style: none;
+    }
+
+    h1, h2, h3, h4 {
+        color: #fff;
+    }
+
+    a {
+        color:grey;
+        text-decoration: none;
+    }
+
+    p {
+        margin: 0.5rem 0;
+    }
+
+    img {
+	width: 100%;
+    }
+
+    .showcase {
+        position: relative;
+        /* background: darkgreen no-repeat center center/cover;  */
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        align-content: center;
+    }
+
+    .logo {
+	position: relative;
+	z-index: 2;
+	height: 90px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    align-content: center;
+    }
+
+    .logo2 {
+	z-index: 2;
+	height: 30%;
+    width: 100%;
+    }
+
+    .logo img {
+	width: 170px;
+	position: absolute;
+    display: flex;
+    align-items: center;
+    align-content: center;
+    justify-content: center;
+    }
+
+    .showcase-content {
+	position: relative;
+	z-index: 2;
+	width: 350px;
+	height: 500px;
+	/* background: rgba(252, 250, 250, 0.65); */
+    background: white;
+	margin: 0 auto;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+    align-content: center;
+	text-align: left;
+	padding: 0px 30px; 
+    border: #fff solid 1px;
+    padding-top: 20px;
+    margin-top: 20px;
+    }
+
+    .form1 h1 {
+	margin-bottom: 20px;
+    }
+
+    .form1 {
+	width: 100%;
+	margin-bottom: 40px;
+    }
+
+    .form1 .info {
+	padding: 5px 0;
+    }
+
+    .form1 .info .email {
+	margin-bottom: 10px;
+	width: 100%;
+	height: 50px;
+	border-radius: 5px;
+	border: none;
+	padding: 10px;
+	font-size: inherit;
+    }
+
+    .form1 .btn {
+	margin-bottom: 10px;
+	width: 100%;
+    }
+
+    .btn-primary {
+	width: 100%;
+	height: 50px;
+	border-radius: 5px;
+	background: blue;
+	color: #fff;
+	font-size: inherit;
+	font-weight: bold;
+	border: none;
+	cursor: pointer;
+	outline: none;
+	box-shadow: 0 1px 0 rgba(0, 0, 0, 0.45);
+    }
+
+    .help {
+	display: flex;
+	justify-content: space-between;
+	font-size: 0.8rem;
+    }
+
+    .help a {
+	color: #999;
+    }
+
+    .help a:hover {
+	text-decoration: underline;
+    }
+
+    input[type=checkbox] {
+	background: #737373;
+	/* -webkit-border-radius: 2px;
+	-moz-border-radius: 2px; */
+	border-radius: 2px;
+	border: 0;
+	height: 16px;
+	/* left: -20px; */
+	width: 16px;
+	margin-right: 5px;
+    }
+
+    .facebook {
+	width: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: flex-start;
+	font-size: 0.8em;
+    }
+
+    .facebook img {
+	width: 20px;
+	margin-right: 10px;
+    }
+
+    .signup {
+	width: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: flex-start;
+    }
+
+    .signup p {
+	margin-right: 5px;
+    }
+
+    .more {
+        font-size: 0.8em;
+        line-height: 1.1em;
+    }
+
+    .more a {
+        color: rgb(17, 108, 228);
+    }
+
+    .more a:hover, .signup a:hover {
+        text-decoration: underline;
+    }
+
+    .ftr-content {
+	margin-left: 10%;
+	padding-top: 20px;
+	font-size: 1em;
+    }
+
+    .ftr-content a {
+	color: #999;
+    }
+
+    .ftr-content a:hover {
+        text-decoration: underline;
+    }
+
+    .contact {
+        margin-bottom: 30px;
+    }
+
+    .contact a:hover {
+	text-decoration: underline;
+    }
+
+    .ftr {
+        margin-bottom: 30px;
+        width: 70%;
+        font-size: 0.8em;
+        display: flex;
+        justify-content: space-between;
+    }
+    #messages{
+        background-color: grey;
+        color: #fff;
+        padding: 10px;
+        margin-top: 10px;
+	}
+</style>
+<body>
+    <div class = 'showcase'>
+        <div class="logo">
+            <img src='/static/images/label.png' alt="Instagram Logo">
+        </div>
+        <div class="showcase-content">
+            <div class="form1">
+                <form action="" method="POST">
+                    {% csrf_token %}
+                    <div class="logo2">
+                        <img src='/static/images/label.png' alt="Instagram Logo">
+                    </div>
+                    <div class="info">
+                        <div class="form-floating mb-3 info">
+                            <input type="text" name="username" class="form-control email" id="floatingInput" placeholder="Username">
+                            <label for="floatingInput">Username</label>
+                        </div>
+                        <div class="form-floating info">
+                            <input type="password" name="password" class="form-control email" id="floatingPassword" placeholder="Password">
+                            <label for="floatingPassword">Password</label>
+                        </div>
+                    </div>
+                    <div class="btn">
+                        <button class="btn-primary" type="submit">Sign In</button>
+                    </div>
+                    <div class="help">
+                        <div>
+                            <input class="form-check-input" type="checkbox" value="True" id="flexCheckDefault">
+                            <label class="form-check-label" for="flexCheckDefault">
+                                Remember Me
+                            </label>
+                        </div>
+                        <a href="">Need Help</a>
+                    </div>
+                </form>
+                {% for message in messages %} 
+                    <p id = 'messages'>
+                        {{ message }}
+                    </p>
+                {% endfor %}
+                <div class="signup">
+                    <p>
+                        New to Instagram? <a href="{% url 'register' %}" class="ml-2">Sign Up</a>
+                    </p>
+                </div>
+                <div class="more">
+                    <p>
+                        This page is protected by Google reCAPTCHA to ensure you're not a bot. <a href="#">Learn more.</a> 
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
