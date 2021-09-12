@@ -1,0 +1,112 @@
+{% extends 'others/base.html' %} {% block title %} Edit blog {% endblock title %} 
+
+{% block content %}
+
+<style>
+  html, body{
+    width: 100%;
+    height: 100%;
+  }
+  .row{
+    padding-left: 10px;
+    padding-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .album{
+    width: 100%;
+  }
+  .bd-placeholder-img {
+    font-size: 1.125rem;
+    text-anchor: middle;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+
+  @media (min-width: 768px) {
+    .bd-placeholder-img-lg {
+      font-size: 3.5rem;
+    }
+  }
+</style>
+
+<div class="container-fluid">
+
+  <section class="py-5 text-center container">
+    <div class="row py-lg-5">
+      <div class="col-lg-6 col-md-8 mx-auto">
+        <h1 class="font-weight-light">Instagram</h1>
+        <p class="lead text-muted">
+          Search results for {{ title }}.
+          There are {{ users | length }} results.
+          Scroll down below to view them!
+        </p>
+        <p>
+          <a href="{% url 'home' %}" class="btn btn-primary my-2">Go Home</a>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <div class="container-fluid bg-dark">
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3" style="width: 100%;">
+      {% if users %}
+        {% for user in users %}
+          <div class="col col1">
+            <div class="card shadow-sm .photo_details">
+              {% if user.profile_photo %}
+              <div class="image">
+                <img src="{{ user.profile_photo.url }}" class="bd-placeholder-img card-img-top" alt="..." width="100%" height="225">
+              </div>
+              {% else %}
+              <div class="image">
+                <img src="/static/images/jeremy-perkins-UgNjyPkphtU-unsplash.jpg" class="bd-placeholder-img card-img-top" alt="..." width="100%" height="225">
+              </div>
+              {% endif %}
+              <div class="card-body">
+                <p class="card-text">
+                  <a href="{% url 'myprofile' user.pk %}"> 
+                    {{ user.user }}
+                  </a>
+                </p>
+                {% if user.bio %}
+                  <p>
+                    {{ user.bio }}
+                  </p>
+                {% else %}
+                  <p>
+                    No bio :)
+                  </p>
+                {% endif %}
+                
+                <div class="d-flex justify-content-between align-items-center">
+                  <small class="text-muted">{{ post.date_publshed }}</small>
+                </div>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      {% else %}
+        <p style="color: white; text-align: center; width: 100%;">
+          No Posts at the moment
+        </p>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<footer class="text-muted py-5">
+  <div class="container">
+    <p class="float-right mb-1">
+      <a href="#">Back to top</a>
+    </p>
+    <p class="mb-1">Faux Blog is a website that allows you to upload photos, view them and update a few of them.</p>
+    <p class="mb-0">Feel free to scrollfor more<a href="/">Visit the homepage</a> or read our <a
+        href="/docs/5.0/getting-started/introduction/">getting started guide</a>.</p>
+  </div>
+</footer>
+
+{% endblock content %}
