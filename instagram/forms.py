@@ -48,7 +48,7 @@ class CommentForm(forms.ModelForm):
 class ProfileForm(forms.ModelForm):
     class Meta:
         model = Profile
-        fields = ('profile_photo', 'bio','user')
+        fields = ('profile_photo', 'bio','user') 
 
         widgets = {
             'bio': forms.Textarea(attrs={'class':"form-control bio", 'label': 'Bio', 'placeholder':"Add your bio...", 'aria-label':"Add your bio..."}),
