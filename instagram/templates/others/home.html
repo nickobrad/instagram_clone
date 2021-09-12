@@ -53,7 +53,7 @@
         position: relative;
     } */
     .row{
-        width: 70%;
+        width: 80%;
         height: max-content;
         background-color: blue;
         display: flex;
@@ -73,7 +73,7 @@
         <div class="col col-lg-9 col-md-9 col-sm-9 col-xs-9 col1">
             {% if object_list %}
             {% for post in object_list %} 
-            <div class="card" style="max-width: 100%; min-width: 18em;">
+            <div class="card" style="max-width: 80%;">
                 <div class="card-header">
                     <img src="/static/images/jeremy-perkins-UgNjyPkphtU-unsplash.jpg" class="rounded" alt="..." style="height: 30px; width: 30px;">
                     {{ post.posted_by }}
@@ -127,9 +127,17 @@
                 </p>
             {% endif %}
         </div>
-        <!-- <div class="col-lg-3 col-md-3 col2" style="background-color: aqua;">
-            hello
-        </div> -->
+        <div class="col-lg-3 col-md-3 col2" style="background-color: aqua;">
+        {% for profile in profiles %}
+            <div class="ui segment">
+                {{ profile }}
+                <br>
+                <a href="{% url 'myprofile' profile.pk %}">
+                <button class="ui primary button"> See Profile </button>
+                </a>
+            </div>
+            {% endfor %}       
+        </div> 
     </div>
 </div>
 <script>
