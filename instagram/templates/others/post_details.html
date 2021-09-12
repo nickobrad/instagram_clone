@@ -1,0 +1,104 @@
+{% extends 'others/base.html' %} 
+{% load bootstrap5 %}
+
+{% block title %} Edit blog {% endblock title %} 
+
+{% block content %}
+<style>
+    body, html{
+        background: lightcyan;
+    }
+    .detail{
+        display: flex;
+        flex-direction: column;
+        background: rgba(255,255,255);
+    }
+    .photo{
+        margin-top: 10px;
+        display: flex;
+        align-content: center;
+        justify-content: center;
+    }
+    .photo img{
+        display: flex;
+        align-items: center;
+        align-content: center;
+        justify-content: center;
+        justify-items: center;padding: 10px 0px;
+    }
+    .photo_details{
+        width: 70%;
+        padding-left: 75px;
+    }
+    .input-group{
+        padding-top: 10px;
+    }
+    .input-group input{
+        border: none;
+        background: transparent;
+    }
+    .btn{
+        border: none;
+    }
+</style>
+
+<div class="container-fluid detail" style="width: 100%; height: 100%;">
+    <div class="photo" style="height: 60%; width: 100%;">
+        <img src="{{ object.image.url }}" alt="" style="width: 90%; height: 100%;">
+    </div>
+    <div class="photo_details">
+        <div class="icons-group" style="padding-bottom: 10px;">
+            <form action="{% url 'like_post' object.pk %}" method="post">
+                {% csrf_token %}
+                {% if user in object.likes.all %}
+                    <button class = 'btn-sm btn' type="submit" name = 'post_id' value = '{{ object.id }}' style="background-color: red;">
+                        <img src="/static/images/heart.png" alt="" style="height: 20px; width: 20px;">
+                    </button> {{ all_likes }} likes
+                {% else %}
+                    <button class = 'btn-sm btn' type="submit" name = 'post_id' value = '{{ object.id }}'>
+                        <img src="/static/images/heart.png" alt="" style="height: 20px; width: 20px;">
+                    </button> {{ all_likes }} likes
+                {% endif %}
+                
+            </form>
+        </div>
+        <p class="card-text">
+            <span class='usertag' style="padding-right: 5px; font-weight: 600;"> {{ object.posted_by }} </span> {{ object.image_caption }}
+        </p>
+        <small>
+            <p class='text-muted' style="padding-top: 5px;">
+                Posted {{ object.date_published | timesince }} ago.
+            </p>
+        </small>
+        <div class="input-group mb-3 d-flex align-content-center" style="width: 100%;">
+            <img src="/static/images/jeremy-perkins-UgNjyPkphtU-unsplash.jpg" class=" img-fluid rounded" alt="..." style="height: 35px; width: 35px;">
+            <form action="" method="post" class = 'd-flex' style="width: 80%;">
+                {% csrf_token %}
+                {{ form.body }}
+                {{ form.posted_by }}
+                {{ form.post }}
+                <button class="btn btn-outline-secondary" type="submit" id="button-addon2">Post</button>
+            </form>
+        </div>
+        <hr>
+        {% if not object.comments.all %}  
+            <p>
+                No comments. Be the first to comment
+            </p>
+        {% else %}  
+            {% for comment in object.comments.all %}
+                <p class="card-text">
+                    <span class='usertag' style="padding-right: 5px; font-weight: 600;"> <img src="/static/images/jeremy-perkins-UgNjyPkphtU-unsplash.jpg" class=" img-fluid rounded" alt="..." style="height: 35px; width: 35px;"></span>  <span class='usertag' style="padding-right: 5px; font-weight: 600;"> {{ object.posted_by }} </span> {{ comment.body }}
+                </p>
+            {% endfor %}
+        {% endif %}
+            
+    </div>
+</div>
+<script>
+    var name = '{{ user.pk }}';
+    var post = '{{ object.pk }}'
+    document.getElementById('user').value = name;
+    document.getElementById('post').value = post;
+</script>
+{% endblock %}
