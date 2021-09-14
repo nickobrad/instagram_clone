@@ -9,7 +9,7 @@ from django.urls import reverse
 
 class Profile(models.Model): 
     user = models.OneToOneField(User, on_delete=CASCADE)
-    profile_photo = models.ImageField(upload_to = 'profile_pictures/', blank = True)
+    profile_photo = models.ImageField(upload_to = 'profile_pictures/', default = 'photo.jpg', blank = True)
     bio = models.TextField(blank=True) 
     updated = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add=True)

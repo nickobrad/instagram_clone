@@ -83,7 +83,7 @@
                     <img src="{{ post.posted_by.profile_photo.url }}" class="rounded" alt="..." style="height: 30px; width: 30px;">
                     <a href="{% url 'myprofile' post.posted_by.pk %}" style="text-decoration: none; color: black;">{{ post.posted_by }}</a>
                     {% else %}
-                    <img src="{% static '/static/images/jeremy-perkins-UgNjyPkphtU-unsplash.jpg' %}" class="rounded" alt="..." style="height: 30px; width: 30px;">
+                    <img src="/static/images/jeremy-perkins-UgNjyPkphtU-unsplash.jpg"class="rounded" alt="..." style="height: 30px; width: 30px;">
                     <a href="{% url 'myprofile' post.posted_by.pk %}" style="text-decoration: none; color: black;">{{ post.posted_by }}</a>
                     {% endif %}
                 </div>
