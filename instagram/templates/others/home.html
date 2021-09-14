@@ -70,7 +70,20 @@
         align-items: center;
         width: 90%;
     }
-    
+    .nopost{
+        border: solid 1px white;
+        border-radius: 20px;
+        width: 100%;
+        height: 500px;
+        color: white;
+        margin-top: 100px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;  
+        font-size: 1.4rem;
+        padding: 10px 10px;
+    }
 </style>
 <div class="container-fluid home_container">
     <div class="row">
@@ -137,8 +150,8 @@
             </div>
             {% endfor %}
             {% else %}
-                <p>
-                    No Posts at the moment
+                <p class='nopost'>
+                    No Posts at the moment. Feel free to <a href="{% url 'profile_list' %}">view</a> other profiles, follow them and see their photos on your homepage.         
                 </p>
             {% endif %}
         </div>
@@ -146,3 +159,4 @@
 </div>
 
 {% endblock content %}
+

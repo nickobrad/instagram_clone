@@ -58,7 +58,7 @@ class ProfileListView(ListView):
 def my_profile(request, pk):
 
     form = ImageForm()
-    form2 = ProfileForm()
+    form2 = ProfileForm() 
 
     view_profile = Profile.objects.get(pk = pk)
     my_profile = Profile.objects.get(user = request.user)
@@ -157,14 +157,6 @@ def HomeView(request):
 
     form = CommentForm()
 
-    # if request.method == 'POST':
-    #     form = CommentForm(request.POST)
-    #     if form.is_valid():
-    #         form.save()
-    #         return redirect('home')
-    #     else:
-    #         form = CommentForm()
-
     profiles = Profile.objects.all().exclude(user = request.user)
 
     return render(request, 'others/home.html', {'form': form, 'object_list': qs, 'profiles': profiles})
@@ -172,17 +164,22 @@ def HomeView(request):
 def PostDetailView(request, pk):
     post = Image.objects.get(id = pk)
     total = post.all_likes()
-
+    current_user = Profile.objects.get(user = request.user)
     form = CommentForm()
     if request.method == 'POST':
         form = CommentForm(request.POST)
         if form.is_valid():
-            form.save()
-            return HttpResponseRedirect(reverse('postdetails', args = [int(pk)]))
+            new_comment = form.save(commit = False)
+            new_comment.post = Image.objects.get(pk = pk)
+            new_comment.posted_by = Profile.objects.get(user = request.user)
+            print(new_comment.posted_by)
+
+            new_comment.save()
+            return HttpResponseRedirect(reverse('postdetails', args = [int(pk)])) 
         else:
             form = CommentForm()
 
-    return render(request, 'others/post_details.html', {'form': form, 'object': post, 'all_likes': total})
+    return render(request, 'others/post_details.html', {'form': form, 'object': post, 'all_likes': total, 'user': current_user})
 
 def comment(request, pk):
     form = CommentForm()
@@ -192,6 +189,7 @@ def comment(request, pk):
             new_comment = form.save(commit = False)
             new_comment.post = Image.objects.get(pk = pk)
             new_comment.posted_by = Profile.objects.get(user = request.user)
+            print(new_comment.posted_by)
             new_comment.save()
             return HttpResponseRedirect(reverse('postdetails', args = [int(pk)]))
         else:

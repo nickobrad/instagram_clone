@@ -5,13 +5,98 @@
 {% endblock title %}
 
 {% block content %}
-    {% for profile in profiles %}
-    <div class="ui segment">
-        {{ profile }}
-        <br>
-        <a href="{% url 'myprofile' profile.pk %}">
-        <button class="ui primary button"> See Profile </button>
-        </a>
+
+<style>
+  html, body{
+    width: 100%;
+    height: 100%;
+  }
+  .row{
+    padding-left: 10px;
+    padding-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .album{
+    width: 100%;
+  }
+  .bd-placeholder-img {
+    font-size: 1.125rem;
+    text-anchor: middle;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+
+  @media (min-width: 768px) {
+    .bd-placeholder-img-lg {
+      font-size: 3.5rem;
+    }
+  }
+</style>
+
+<div class="container-fluid">
+
+  <section class="py-5 text-center container">
+    <div class="row py-lg-5">
+      <div class="col-lg-6 col-md-8 mx-auto">
+        <h1 class="font-weight-light">Instagram</h1>
+        <p class="lead text-muted">
+          There are {{ profiles | length }} to view and follow.
+          Scroll down below to view them!
+        </p>
+        <p>
+          <a href="{% url 'home' %}" class="btn btn-primary my-2">Go Home</a>
+        </p>
+      </div>
     </div>
-    {% endfor %}
+  </section>
+
+  <div class="container-fluid bg-dark">
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3" style="width: 100%;">
+      {% if profiles %}
+        {% for profile in profiles %}
+          <div class="col col1">
+            <div class="card shadow-sm .photo_details">
+              {% if profile.profile_photo %}
+              <div class="image">
+                <img src="{{ profile.profile_photo.url }}" class="bd-placeholder-img card-img-top" alt="..." width="100%" height="225">
+              </div>
+              {% else %}
+              <div class="image">
+                <img src="/static/images/jeremy-perkins-UgNjyPkphtU-unsplash.jpg" class="bd-placeholder-img card-img-top" alt="..." width="100%" height="225">
+              </div>
+              {% endif %}
+              <div class="card-body">
+                <p class="card-text">
+                  <a href="{% url 'myprofile' profile.pk %}" style="text-decoration: none; color: black;"> 
+                    Username: {{ profile.user }}
+                  </a>
+                </p>
+                {% if profile.bio %}
+                  <p>
+                    Bio: {{ profile.bio }}
+                  </p>
+                {% else %}
+                  <p>
+                    Bio: Hi. I'm new here
+                  </p>
+                {% endif %}
+                <p>
+                  Followers: {{ profile.followers.count }} | Following: {{ profile.following.count }}
+                </p>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      {% else %}
+        <p style="color: white; text-align: center; width: 100%;">
+          There are no other profiles to follow.
+        </p>
+      {% endif %}
+    </div>
+  </div>
+</div>
 {% endblock content %}

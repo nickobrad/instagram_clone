@@ -1,16 +1,18 @@
 {% extends 'others/base.html' %} 
 {% load bootstrap5 %}
-{% load static %}
 
-{% block title %} Edit blog {% endblock title %} 
+{% block title %} {% endblock title %} 
 
 {% block content %}
 <style>
     body, html{
+        height: 100%;
         background: lightcyan;
     }
     .detail{
         display: flex;
+        height: max-content;
+        width: 100%;
         flex-direction: column;
         background: rgba(255,255,255);
     }
@@ -43,7 +45,7 @@
     }
 </style>
 
-<div class="container-fluid detail" style="width: 100%; height: 100%;">
+<div class="container-fluid detail">
     <div class="photo" style="height: 60%; width: 100%;">
         <img src="{{ object.image.url }}" alt="" style="width: 90%; height: 100%;">
     </div>
@@ -72,16 +74,14 @@
             </p>
         </small>
         <div class="input-group mb-3 d-flex align-content-center" style="width: 100%;">
-            {% if object.posted_by.profile_photo %}
-                <img src="{{ object.posted_by.profile_photo.url }}" class=" img-fluid rounded" alt="..." style="height: 35px; width: 35px;">
+            {% if user.profile_photo %}
+                <img src="{{ object.profile_photo.url }}" class=" img-fluid rounded" alt="..." style="height: 35px; width: 35px;">
             {% else %}
-                <img src="{% static '/static/images/jeremy-perkins-UgNjyPkphtU-unsplash.jpg' %}" class=" img-fluid rounded" alt="..." style="height: 35px; width: 35px;">
+                <img src="/static/images/jeremy-perkins-UgNjyPkphtU-unsplash.jpg" class=" img-fluid rounded" alt="..." style="height: 35px; width: 35px;">
             {% endif %}
             <form action="" method="post" class = 'd-flex' style="width: 80%;">
                 {% csrf_token %}
                 {{ form.body }}
-                {{ form.posted_by }}
-                {{ form.post }}
                 <button class="btn btn-outline-secondary" type="submit" id="button-addon2">Post</button>
             </form>
         </div>
@@ -93,20 +93,15 @@
         {% else %}  
             {% for comment in object.comments.all %}
                 <p class="card-text">
-                    {% if object.posted_by.profile_photo %}
-                    <span class='usertag' style="padding-right: 5px; font-weight: 600;"> <img src="{{ object.posted_by.profile_photo.url }}" class=" img-fluid rounded" alt="..." style="height: 35px; width: 35px;"></span>  <span class='usertag' style="padding-right: 5px; font-weight: 600;"> {{ object.posted_by }} </span> {{ comment.body }}
+                    {% if comment.posted_by.profile_photo %}
+                        <span class='usertag' style="padding-right: 5px; font-weight: 600;"> <img src="{{ comment.posted_by.profile_photo.url }}" class=" img-fluid rounded" alt="..." style="height: 35px; width: 35px;"></span>  <span class='usertag' style="padding-right: 5px; font-weight: 600;"> {{ comment.posted_by }} </span> {{ comment.body }}
                     {% else %}
-                    <span class='usertag' style="padding-right: 5px; font-weight: 600;"> <img src="{% static '/static/images/jeremy-perkins-UgNjyPkphtU-unsplash.jpg' %}" class=" img-fluid rounded" alt="..." style="height: 35px; width: 35px;"></span>  <span class='usertag' style="padding-right: 5px; font-weight: 600;"> {{ object.posted_by }} </span> {{ comment.body }}
-                    {% endif %}                </p>
+                        <span class='usertag' style="padding-right: 5px; font-weight: 600;"> <img src="/static/images/jeremy-perkins-UgNjyPkphtU-unsplash.jpg" class=" img-fluid rounded" alt="..." style="height: 35px; width: 35px;"></span>  <span class='usertag' style="padding-right: 5px; font-weight: 600;"> {{ comment.posted_by }} </span> {{ comment.body }}
+                    {% endif %}                
+                </p>
             {% endfor %}
         {% endif %}
             
     </div>
 </div>
-<script>
-    var name = '{{ user.pk }}';
-    var post = '{{ object.pk }}'
-    document.getElementById('user').value = name;
-    document.getElementById('post').value = post;
-</script>
 {% endblock %}

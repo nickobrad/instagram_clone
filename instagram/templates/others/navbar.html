@@ -15,6 +15,9 @@
           <a class="nav-link" aria-current="page" href="/home">Home</a>
         </li>
         <li class="nav-item">
+          <a class="nav-link" href="{% url 'profile_list' %}">Other Profiles</a>
+        </li>
+        <li class="nav-item">
           <a class="nav-link" href="{% url 'myprofile' user.id %}">My Profile({{ request.user.username }})</a>
         </li>
         <li class="nav-item">

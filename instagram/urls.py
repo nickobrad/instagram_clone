@@ -27,14 +27,14 @@ urlpatterns = [
     path('register/', register, name = 'register'),  
     path('', loginuser, name = 'login' ),
     path('home', HomeView, name = 'home'),
-    path('post/<int:pk>', PostDetailView, name = 'postdetails'), 
+    path('post/<int:pk>', PostDetailView, name = 'postdetails'),  
     path('comment/post/<int:pk>', comment, name = 'comment'), 
     # path('profile/<int:pk>', ProfileDetailView.as_view(), name = 'my_profile'),
     path('profile/<int:pk>', my_profile, name = 'myprofile'),
     path('profile/update/<int:pk>', UpdateProfile.as_view(), name = 'updateprofile'),
     path('profile/edit/<int:pk>', my_profile, name = 'editprofile'),
     path('like/<int:pk>', LikeView, name = 'like_post'),
-    path('ptf', UpdateProfile.as_view(), name = 'profile_list'),
+    path('ptf', ProfileListView.as_view(), name = 'profile_list'),
     # path('follow/<str:username>', follow_user, name = 'follow'),
     path('follow', follow_unfollow_profile, name = 'ffview'),
     url(r'^search/', search_results, name = 'search_users'),
@@ -42,4 +42,5 @@ urlpatterns = [
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
  
