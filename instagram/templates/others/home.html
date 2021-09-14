@@ -139,7 +139,7 @@
                 </div>
                 <div class="card-footer">
                     <div class="input-group mb-3">
-                        <img src="{{ post.posted_by.profile_photo.url }}" class=" img-fluid rounded" alt="..." style="height: 35px; width: 35px;">
+                        <img src="{{ user.profile.profile_photo.url }}" class=" img-fluid rounded" alt="..." style="height: 35px; width: 35px;">
                         <form class = 'd-flex' action="{% url 'comment' post.pk %}" method="post" style="max-width: 92%;">
                             {% csrf_token %}
                             {{ form.body }}

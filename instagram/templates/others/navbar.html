@@ -5,10 +5,10 @@
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <form action='{% url 'search_users' %}' role = 'search' class="d-flex mx-auto">
+      <form action="{% url 'search_users' %}" role = 'search' class="d-flex mx-auto">
         {% csrf_token %}
         <input class="form-control me-2" name = 'search_user' type="search" placeholder="Search" aria-label="Search">
-        <button class="btn btn-outline-success" type="submit">Search</button>
+        <button class="btn btn-secondary" type="submit">Search</button>
       </form>
       <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
         <li class="nav-item">
@@ -17,12 +17,19 @@
         <li class="nav-item">
           <a class="nav-link" href="{% url 'profile_list' %}">Other Profiles</a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'myprofile' user.id %}">My Profile({{ request.user.username }})</a>
+        <li class="nav-item dropdown" style="padding-right: 100px;">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            {% if user.profile.profile_photo %}
+                <img src="{{ user.profile.profile_photo.url }}" class=" img-fluid rounded" alt="..." style="height: 35px; width: 35px;">
+            {% else %}
+                <img src="/static/images/jeremy-perkins-UgNjyPkphtU-unsplash.jpg" class=" img-fluid rounded" alt="..." style="height: 35px; width: 35px;">
+            {% endif %}
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <li><a class="dropdown-item" href="{% url 'myprofile' user.id %}">My Profile</a></li>
+            <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
+          </ul>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'logout' %}" tabindex="-1">Logout</a>
-        </li>      
       </ul>
     </div>
   </div>

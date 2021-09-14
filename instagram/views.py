@@ -75,6 +75,8 @@ def my_profile(request, pk):
 
     pictures = Image.objects.filter(posted_by = pk).all()
     profile = Profile.objects.get(id = pk)
+    title = f'{profile.user}\'s Profile'
+
 
     current_user = request.user
 
@@ -88,7 +90,7 @@ def my_profile(request, pk):
     else:
         form = ImageForm()
     
-    return render(request, 'others/profile.html', {'form': form, 'form2':form2, 'posts': pictures, 'profile': profile, 'follow': follow, 'follower': follower,'user': current_user})
+    return render(request, 'others/profile.html', {'form': form, 'form2':form2, 'posts': pictures, 'profile': profile, 'follow': follow, 'follower': follower,'user': current_user, 'title': title})
 
 def edit_profile(request, pk):
     form2 = ProfileForm()
@@ -165,10 +167,11 @@ def PostDetailView(request, pk):
     post = Image.objects.get(id = pk)
     total = post.all_likes()
     current_user = Profile.objects.get(user = request.user)
+    title = post.image_name
     form = CommentForm()
     if request.method == 'POST':
         form = CommentForm(request.POST)
-        if form.is_valid():
+        if form.is_valid(): 
             new_comment = form.save(commit = False)
             new_comment.post = Image.objects.get(pk = pk)
             new_comment.posted_by = Profile.objects.get(user = request.user)
@@ -179,7 +182,7 @@ def PostDetailView(request, pk):
         else:
             form = CommentForm()
 
-    return render(request, 'others/post_details.html', {'form': form, 'object': post, 'all_likes': total, 'user': current_user})
+    return render(request, 'others/post_details.html', {'form': form, 'object': post, 'all_likes': total, 'user2': current_user, 'title': title})
 
 def comment(request, pk):
     form = CommentForm()
