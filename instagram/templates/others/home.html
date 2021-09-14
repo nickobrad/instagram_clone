@@ -1,4 +1,5 @@
 {% extends 'others/base.html' %} 
+{% load static %}
 
 {% block title %} Edit blog {% endblock title %} 
 
@@ -7,6 +8,7 @@
     body, html{
         height: 100%;
         width: 100%;
+        background: fixed black center no-repeat;
     }
     .card{
         margin: 20px 10px;
@@ -48,14 +50,9 @@
         height: 100%;
         width: 100%;
     }
-    /* .col1{
-        padding-left: 250px; 
-        position: relative;
-    } */
     .row{
-        width: 80%;
+        width: 90%;
         height: max-content;
-        background-color: blue;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -63,8 +60,15 @@
     }
     .col2{
         /* position: absolute; */
-        background-color: aqua;
+        margin-left: 10px;
         /* width: 100%; */
+    }
+    .col1{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: 90%;
     }
     
 </style>
@@ -75,18 +79,31 @@
             {% for post in object_list %} 
             <div class="card" style="max-width: 80%;">
                 <div class="card-header">
-                    <img src="/static/images/jeremy-perkins-UgNjyPkphtU-unsplash.jpg" class="rounded" alt="..." style="height: 30px; width: 30px;">
-                    {{ post.posted_by }}
+                    {% if post.posted_by.profile_photo %}
+                    <img src="{{ post.posted_by.profile_photo.url }}" class="rounded" alt="..." style="height: 30px; width: 30px;">
+                    <a href="{% url 'myprofile' post.posted_by.pk %}" style="text-decoration: none; color: black;">{{ post.posted_by }}</a>
+                    {% else %}
+                    <img src="{% static '/static/images/jeremy-perkins-UgNjyPkphtU-unsplash.jpg' %}" class="rounded" alt="..." style="height: 30px; width: 30px;">
+                    <a href="{% url 'myprofile' post.posted_by.pk %}" style="text-decoration: none; color: black;">{{ post.posted_by }}</a>
+                    {% endif %}
                 </div>
-                <img src="{{ post.image.url }}" class="card-img-top" alt="..." style = "height: 400px;">
+                <a href="{% url 'postdetails' post.pk%}">
+                    <img src="{{ post.image.url }}" class="card-img-top" alt="..." style = "height: 400px;">
+                </a>
                 <div class="card-body">
                     <div class="icons-group" style="padding-bottom: 10px;">
-                        <a href="">
-                            <img src="/static/images/heart.png" alt="" style="height: 20px; width: 20px;">
-                        </a>
-                        <a href="">
-                            <img src="/static/images/speech-bubble.png" alt="" style="height: 20px; width: 20px;margin-left: 10px;">
-                        </a>
+                        <form action="{% url 'like_post' post.pk %}" method="post">
+                            {% csrf_token %}
+                            {% if user in post.likes.all %}
+                                <button class = 'btn-sm btn' type="submit" name = 'post_id' value = '{{ post.id }}' style="background-color: red;">
+                                    <i class="far fa-heart"></i> {{ post.likes.all.count }}                          
+                                </button> 
+                                {% else %}
+                                <button class = 'btn-sm btn' type="submit" name = 'post_id' value = '{{ post.id }}'>
+                                    <i class="far fa-heart"></i> {{ post.likes.all.count }}                                
+                                </button> 
+                            {% endif %}
+                        </form>
                     </div>
                     <small>
                         <a href="{% url 'postdetails' post.pk %}" class='all_comments text-muted'>
@@ -97,7 +114,8 @@
                     </small>
                     <div class="card-content">
                         <p class="card-text">
-                            <span class='usertag' style="padding-right: 5px; font-weight: 600;"> {{ post.posted_by }} </span> {{ post.image_caption }}
+                            <span class='usertag' style="padding-right: 5px; font-weight: 600;"><a href="{% url 'myprofile' post.posted_by.pk %}" style="text-decoration: none; color: black;">{{ post.posted_by }}</a>
+                            </span> {{ post.image_caption }}
                         </p>
                     </div>
                     <small>
@@ -108,13 +126,10 @@
                 </div>
                 <div class="card-footer">
                     <div class="input-group mb-3">
-                        <img src="/static/images/jeremy-perkins-UgNjyPkphtU-unsplash.jpg" class=" img-fluid rounded" alt="..." style="height: 35px; width: 35px;">
-                        <form class = 'd-flex' action="{% url 'comment' post.pk %}" method="post">
+                        <img src="{{ post.posted_by.profile_photo.url }}" class=" img-fluid rounded" alt="..." style="height: 35px; width: 35px;">
+                        <form class = 'd-flex' action="{% url 'comment' post.pk %}" method="post" style="max-width: 92%;">
                             {% csrf_token %}
                             {{ form.body }}
-                            {{ form.posted_by }}
-                            {{ form.post }}
-                            {{ form.error }}
                             <button class="btn btn-sm btn-outline-secondary" type="submit" id="button-addon2">Post</button>
                         </form>
                     </div>
@@ -127,21 +142,7 @@
                 </p>
             {% endif %}
         </div>
-        <div class="col-lg-3 col-md-3 col2" style="background-color: aqua;">
-        {% for profile in profiles %}
-            <div class="ui segment">
-                {{ profile }}
-                <br>
-                <a href="{% url 'myprofile' profile.pk %}">
-                <button class="ui primary button"> See Profile </button>
-                </a>
-            </div>
-            {% endfor %}       
-        </div> 
     </div>
 </div>
-<script>
-    var name = '{{ user.pk }}';
-    document.getElementById('user').value = name;
-</script>
+
 {% endblock content %}

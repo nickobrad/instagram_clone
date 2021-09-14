@@ -1,0 +1,3 @@
+Hello {{user}}
+
+Welcome to an Instagram Clone. I hope you enjoy using it.

@@ -5,19 +5,18 @@ from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.models import User
 from django.urls import reverse_lazy
 from django.urls.base import reverse
-from .forms import ProfileForm, RegistrationForm
+from .forms import ProfileForm, RegistrationForm, ProfileUpdateForm
 from django.contrib import messages
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .models import Followers, Image, Comment, Profile
+from .models import  Image, Comment, Profile
 from .forms import ImageForm, CommentForm
 from django.http import HttpResponseRedirect
 from django.views.generic.edit import FormMixin
 from itertools import chain
+from .email import send_welcome_email
 
-
-# Create your views here.
 def register(request):
     rgf = RegistrationForm()
     if request.method == 'POST':
@@ -25,6 +24,8 @@ def register(request):
         if rgf.is_valid():
             rgf.save()
             user = rgf.cleaned_data.get('username')
+            email = rgf.changed_data.get('email')
+            send_welcome_email(user, email)
             messages.success(request, 'Account was created for ' + user)
             return redirect('login')
 
@@ -54,33 +55,6 @@ class ProfileListView(ListView):
     def get_queryset(self):
         return Profile.objects.all().exclude(user = self.request.user)
 
-class ProfileDetailView(DetailView):
-    model = Profile
-    template_name = 'others/profile.html'
-
-    def get_object(self, **kwargs):
-        pk = self.kwargs.get('pk')
-        view_profile = Profile.objects.get(pk = pk)
-        return view_profile
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        view_profile = self.get_object()
-        my_profile = Profile.objects.get(user = self.request.user)
-        if view_profile.user in my_profile.following.all():
-            follow = True
-        else:
-            follow = False
-
-        form = ImageForm()
-        form2 = ProfileForm()
-        
-        context['follow'] = follow
-        context['form'] = form
-        context['form2'] = form2
-        return context
-
-
 def my_profile(request, pk):
 
     form = ImageForm()
@@ -93,6 +67,11 @@ def my_profile(request, pk):
         follow = True
     else:
         follow = False
+
+    if my_profile.user in view_profile.followers.all():
+        follower = True
+    else:
+        follower = False
 
     pictures = Image.objects.filter(posted_by = pk).all()
     profile = Profile.objects.get(id = pk)
@@ -109,15 +88,23 @@ def my_profile(request, pk):
     else:
         form = ImageForm()
     
+    return render(request, 'others/profile.html', {'form': form, 'form2':form2, 'posts': pictures, 'profile': profile, 'follow': follow, 'follower': follower,'user': current_user})
+
+def edit_profile(request, pk):
+    form2 = ProfileForm()
     if request.method == 'POST':
         form2 = ProfileForm(request.POST, request.FILES)
         if form2.is_valid():
-            form2.save()
-            return HttpResponseRedirect('profile')
+            user = request.user
+            profile_photo = request.FILES.get('photo')
+            bio = request.POST.get('bio')
+            profile = Profile(user = user, bio = bio, profile_photo = profile_photo)
+            profile.save()
+            return HttpResponseRedirect(reverse('myprofile', args=[int(pk)]))
         else:
             form2 = ProfileForm()
+            return HttpResponseRedirect(reverse('myprofile', args=[int(pk)]))
 
-    return render(request, 'others/profile.html', {'form': form, 'form2':form2, 'posts': pictures, 'profile': profile, 'follow': follow, 'user': current_user})
 
 def follow_unfollow_profile(request):
     if request.method == 'POST':
@@ -129,7 +116,14 @@ def follow_unfollow_profile(request):
             my_profile.following.remove(obj.user)
         else:
             my_profile.following.add(obj.user)
+
+        if my_profile.user in obj.followers.all():
+            obj.followers.remove(my_profile.user)
+        else:
+            obj.followers.add(my_profile.user)
+
         return redirect(request.META.get('HTTP_REFERER'))
+
     return redirect('profile_list')
 
 def HomeView(request):
@@ -180,7 +174,6 @@ def PostDetailView(request, pk):
     total = post.all_likes()
 
     form = CommentForm()
-    # current_user = request.user
     if request.method == 'POST':
         form = CommentForm(request.POST)
         if form.is_valid():
@@ -193,13 +186,12 @@ def PostDetailView(request, pk):
 
 def comment(request, pk):
     form = CommentForm()
-    # current_user = request.user
     if request.method == 'POST':
         form = CommentForm(request.POST, request.FILES)
         if form.is_valid():
             new_comment = form.save(commit = False)
-            new_comment.post = pk
-            new_comment.posted_by = request.user
+            new_comment.post = Image.objects.get(pk = pk)
+            new_comment.posted_by = Profile.objects.get(user = request.user)
             new_comment.save()
             return HttpResponseRedirect(reverse('postdetails', args = [int(pk)]))
         else:
@@ -207,34 +199,10 @@ def comment(request, pk):
 
     return HttpResponseRedirect(reverse('postdetails', args = [int(pk)]))
 
-
 def LikeView(request, pk):
     post = get_object_or_404(Image, id = request.POST.get('post_id'))
     post.likes.add(request.user)
-    return HttpResponseRedirect(reverse('postdetails', args = [int(pk)]))
-
-def follow_user(request, username):
-
-    other_user = User.objects.get(username = username)
-    session_user = request.user
-    # session_user = request.session['user']
-    get_user = User.objects.get(username = session_user)
-    check_follower = Followers.objects.get(user = get_user.id)
-    is_followed = False
-
-    if other_user.username != session_user.username:
-        if check_follower.another_user.filter(username = other_user).exists():
-            add_user = Followers.objects.get(user = get_user)
-            add_user.another_user.remove(other_user)
-            is_followed = False
-            return HttpResponseRedirect(reverse('profile'))
-        else:
-            add_user = Followers.objects.get(user = get_user)
-            add_user.another_user.add(other_user)
-            is_followed = True
-            return HttpResponseRedirect(reverse('profile'))
-    
-    return HttpResponseRedirect(reverse('profile'))
+    return redirect(request.META.get('HTTP_REFERER'))
 
 def search_results(request):  
 
@@ -248,32 +216,37 @@ def search_results(request):
         message = "You haven't searched for any term"
         return render(request, 'others/search_results.html',{"message": message})
 
+class UpdateProfile(UpdateView):
+    model = Profile
+    form_class = ProfileUpdateForm
+    template_name = 'others/update_profile.html' 
+
 def logout_view(request):
     logout(request)
     return redirect('login')
 
-# def post_of_following(request):
+# class ProfileDetailView(DetailView):
+#     model = Profile
+#     template_name = 'others/profile.html'
 
-#     # Get logged in user
+#     def get_object(self, **kwargs):
+#         pk = self.kwargs.get('pk')
+#         view_profile = Profile.objects.get(pk = pk)
+#         return view_profile
 
-#     profile = Profile.objects.get(user = request.user)
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         view_profile = self.get_object()
+#         my_profile = Profile.objects.get(user = self.request.user)
+#         if view_profile.user in my_profile.following.all():
+#             follow = True
+#         else:
+#             follow = False
 
-#     # Check who we are following
-#     users = [user for user in profile.following.all()]
-
-#     # Initial values for variables
-#     posts = []
-#     qs = None
-
-#     # Get the posts of people who we are following
-#     for u in users:
-#         p = Profile.objects.get(users = u)
-#         p_posts = p.post_set.all()
-#         posts.append(p_posts)
-
-#     # My posts
-#     my_posts = profile.profiles_posts()
-#     posts.append(my_posts)
-
-#     return render(request, 'others/home.html', {'posts': posts})
- 
+#         form = ImageForm()
+#         form2 = ProfileForm()
+        
+#         context['follow'] = follow
+#         context['form'] = form
+#         context['form2'] = form2
+#         return context

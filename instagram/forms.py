@@ -11,7 +11,7 @@ class RegistrationForm(UserCreationForm):
 
     class Meta:
         model = User
-        fields = ['first_name', 'last_name', 'email', 'username','password1','password2' ]
+        fields = ['first_name', 'last_name', 'email', 'username','password1','password2' ] 
 
         widgets = {
             'first_name':forms.TextInput(attrs = {'class':'form-control names', 'placeholder':"First Name", 'label': 'First Name'}),
@@ -37,12 +37,10 @@ class ImageForm(forms.ModelForm):
 class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
-        fields = ('body', 'posted_by', 'post')
+        fields = ('body',)
 
         widgets = {
             'body': forms.TextInput(attrs={'class':"form-control comment", 'placeholder':"Add a comment...", 'aria-label':"Add a comment..."}),
-            'posted_by': forms.TextInput(attrs = {'class': 'form-control','id': 'user', 'value': '', 'type': 'hidden'}),
-            'post': forms.TextInput(attrs = {'class': 'form-control','id': 'post', 'value': '', 'type': 'hidden'}),
         }
 
 class ProfileForm(forms.ModelForm):
@@ -52,6 +50,18 @@ class ProfileForm(forms.ModelForm):
 
         widgets = {
             'bio': forms.Textarea(attrs={'class':"form-control bio", 'label': 'Bio', 'placeholder':"Add your bio...", 'aria-label':"Add your bio..."}),
-            'user': forms.TextInput(attrs = {'class': 'form-control','id': 'user', 'value': '', 'type': 'hidden'}),
-            'profile_photo': forms.FileInput(attrs = {'class': 'form-control', 'type': 'file'})
+            'user': forms.TextInput(attrs = {'class': 'form-control user','id': 'user', 'type': 'hidden'}),
+            'profile_photo': forms.FileInput(attrs = {'class': 'form-control photo', 'type': 'file'})
         }
+
+class ProfileUpdateForm(forms.ModelForm):
+
+    class Meta: 
+        model = Profile
+        fields = ('profile_photo', 'bio')
+
+        widgets = {
+            'bio': forms.Textarea(attrs={'class':"form-control bio", 'label': 'Bio', 'placeholder':"Add your bio...", 'aria-label':"Add your bio..."}),
+            'profile_photo': forms.FileInput(attrs = {'class': 'form-control photo', 'type': 'file'})
+        }
+        

@@ -6,9 +6,9 @@
 {% block content %}
 <style>
     body, html{
-        width: 100%;
+        width: 100%; 
         height: 100%;
-        background: lightsteelblue;
+        background: fixed black center no-repeat;
     }
     .profile{
         display: flex;
@@ -102,7 +102,7 @@
                     {{ posts.count }} posts
                 </p>
                 <p style="padding: 0px 10px;">
-                    {{ profile.following.count }} followers
+                    {{ profile.followers.count }} followers
                 </p>
                 <p>
                     {{ profile.following.count }} following
@@ -136,51 +136,14 @@
                     <button type="button" class="btn btn-primary btn-sm btn_modal" data-bs-toggle="modal" data-bs-target="#exampleModal">
                         Upload Photo
                     </button>
-                    <button type="button" class="btn btn-primary btn-sm btn_modal" data-bs-toggle="modal" data-bs-target="#exampleModal2">
+                    <a type="button" class="btn btn-primary btn-sm btn_modal" href='{% url 'updateprofile' profile.id %}'>
                         Edit Profile
-                    </button>   
+                    </a>   
                 {% else %}
                 
                 {% endif %}
             </div>            
-            
-            <!-- Modal -->
-
-            <div class="modal fade" id="exampleModal2" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">Update your profile</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <form class = "form-group form_add" method="POST" enctype = 'multipart/form-data'>
-                                {% csrf_token %}
-                                <div class="input mb-3">
-                                    {{ form2.bio.label }} :
-                                    {{ form2.bio }}
-                                </div>
-                                <div class="input mb-3">
-                                    {{ form2.profile_photo.label }} :
-                                    {{ form2.profile_photo }}
-                                </div>
-                                <div class="input mb-3" style="display: none;">
-                                    {{ form2.user.label }}
-                                    {{ form2.user }}
-                                </div>
-                                <div class="d-flex justify-content-center mb-2">
-                                    <button class="btn btn-primary my-2"> Post </button>
-                                </div>
-                            </form>
-                            {{ form.errors }}
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
+                        
             <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
@@ -227,7 +190,7 @@
         {% if user.pk == profile.user.id %}
             {% if posts %}
                 {% for post in posts %}
-                    <div class="col col2" >
+                    <div class="col col2 d-flex align-content-center justify-content-center" style="background-color: rgba(255,255,255, 0.78);">
                         <a href="{% url 'postdetails' post.id%}">
                             <img src="{{ post.image.url }}" alt="" style="width: 300px; height: 300px">
                         </a>
@@ -242,11 +205,11 @@
             {% if follow %}
                 {% if posts %}
                 {% for post in posts %}
-                    <div class="col col2" >
-                        <a href="{% url 'postdetails' post.id%}">
-                            <img src="{{ post.image.url }}" alt="" style="width: 300px; height: 300px">
-                        </a>                    
-                    </div>
+                <div class="col col2 d-flex align-content-center justify-content-center" style="background-color: rgba(255,255,255, 0.78);">
+                    <a href="{% url 'postdetails' post.id%}">
+                        <img src="{{ post.image.url }}" alt="" style="width: 300px; height: 300px">
+                    </a>
+                </div>
                 {% endfor %}
                 {% else %}
                     <p>
@@ -263,9 +226,9 @@
     </div>
 </div>
 
-{% comment %} <script>
-    var name = '{{ profile.pk }}';
-    document.getElementById('user').value = name;
-</script> {% endcomment %}
+<script>
+    var user = '{{ profile.pk }}';
+    document.getElementById('user').value = user;
+</script>
 
 {% endblock %}
