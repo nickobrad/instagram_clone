@@ -2,4 +2,3 @@ insta/
 *.pyc
 __pycache__
 .env
-requirements.txt
