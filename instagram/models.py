@@ -17,13 +17,13 @@ class Profile(models.Model):
     followers = models.ManyToManyField(User, related_name= 'followers', blank= True)
 
     def __str__(self) -> str:
-        return self.user.username 
+        self.user.username 
 
     def save_profile(self):
-        return self.save()
+        self.save()
 
     def delete_profile(self):
-        return self.delete()
+        self.delete()
 
     @classmethod
     def update_profile(cls, profile_id, new_bio):
@@ -53,10 +53,10 @@ class Image(models.Model):
         return str(self.image_name)
 
     def save_image(self):
-        return self.save()
+        self.save()
 
     def delete_image(self):
-        return self.delete()
+        self.delete()
 
     @classmethod
     def update_image_name(cls, image_id, new_name):
@@ -77,10 +77,10 @@ class Comment(models.Model):
         return '%s - %s' % (self.post.image_name, self.posted_by.username)
 
     def save_comment(self):
-        return self.save()
+        self.save()
 
     def delete_comment(self):
-        return self.delete() 
+        self.delete() 
 
     @classmethod
     def update_comment(cls, comment_id, new_body):
