@@ -37,6 +37,11 @@ class ProfileTestCase(TestCase):
         new = Profile.objects.get(id = profile_id)
         self.assertEqual(new.bio, 'Testing2')
 
+    def test_search_by_username(self):
+        self.new_user.save()
+        profile = Profile.search_by_username('jamie')
+        self.assertTrue(len(profile) == 1)
+
 class ImageTestClass(TestCase):
 
     # Creating a new editor and saving it
@@ -107,4 +112,6 @@ class CommentTestCase(TestCase):
         Comment.update_comment(comment_id, 'Testing2')
         new = Comment.objects.get(id = comment_id)
         self.assertEqual(new.body, 'Testing2')
+
+    
 
